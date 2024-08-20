@@ -10,6 +10,5 @@
     
 Sample command performing a swap with 100% of the NEON balance inside the address 0xAB1c34b53F12980a4fa9043B70c864CEE6891c0C with 10% slippage:
 
-    ```
     node swap.js 100 0xAB1c34b53F12980a4fa9043B70c864CEE6891c0C 10
-    ```
+    
