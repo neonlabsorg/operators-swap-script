@@ -1,9 +1,13 @@
 const { Web3 } = require('web3');
+const { isAddress } = require('web3-validator');
 require("dotenv").config();
 const { config } = require("./config");
 const { BigNumber } = require("bignumber.js");
 const { amount2Decimal, fetchToken, getErc20TokenContract } = require("iziswap-sdk/lib/base/token/token");
 const { getQuoterContract, quoterSwapChainWithExactInput } = require("iziswap-sdk/lib/quoter/funcs");
+
+const web3 = new Web3(config.RPC);
+const SIGNER = web3.eth.accounts.wallet.add(process.env.PRIVATE_KEY_OWNER);
 
 // script args
 const args = process.argv.slice(2);
@@ -11,16 +15,16 @@ let amountPercentage = (args[0] > 100) ? 100 : args[0];
 if (!amountPercentage) {
     return console.log('Please specify NEON amount to be swapped against WSOL. Value is in percentages and should be between 0.01 and 100 ( from 1% and 100% ).');
 }
-let slippage = (args[1] != undefined) ? 1 - (args[1] / 100) : 0.995; // default slippage is 0.05%
+const receiver = (args[1] != undefined && isAddress(args[1])) ? args[1] : SIGNER[0].address;
+let slippage = (args[2] != undefined) ? 1 - (args[2] / 100) : 0.995; // default slippage is 0.05%
 if (slippage < 0) {
     slippage = 0;
 }
 
 console.log('Percentage of the total balance to be swapped:', amountPercentage, '%');
+console.log('Receiver of SOL tokens:', receiver);
 console.log('Swap slippage:', (100 - (100 * slippage)).toFixed(2), '%');
 
-const web3 = new Web3(config.RPC);
-const SIGNER = web3.eth.accounts.wallet.add(process.env.PRIVATE_KEY_OWNER);
 const QUOTER = getQuoterContract(config.VIBR.ADDRESSES.QUOTER, web3);
 const SWAP = new web3.eth.Contract(
     config.VIBR.ABIs.SWAP,
@@ -44,7 +48,7 @@ async function swap() {
     const swapGasEstimation = await SWAP.methods.swapAmount(
         {
             path: swapPath,
-            recipient: SIGNER[0].address,
+            recipient: receiver,
             amount: web3.utils.toWei(1, 'ether'), // 1 NEON
             minAcquired: 0,
             deadline: swapDeadline
@@ -78,7 +82,7 @@ async function swap() {
     const swapTxData = SWAP.methods.swapAmount(
         {
             path: swapPath,
-            recipient: SIGNER[0].address,
+            recipient: receiver,
             amount: swapAmount,
             minAcquired: (outputAmount * slippage).toFixed(0),
             deadline: swapDeadline
