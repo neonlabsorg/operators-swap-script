@@ -1,6 +1,4 @@
 const config = {
-    RPC: 'https://neon-proxy-mainnet.solana.p2p.org',
-    //RPC: 'https://neon-mainnet.everstake.one/',
     CHAIN_ID: 245022934,
     TOKENS: {
         ADDRESSES: {

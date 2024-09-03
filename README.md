@@ -1,7 +1,7 @@
 # NEON -> SOL swap at [Vibr](https://vibr.finance/trade/swap)
 
 ### Commands
-- Rename `.env.example` to `.env` and place valid EVM private key
+- Rename `.env.example` to `.env` and place valid EVM private key with a valid Neon EVM RPC endpoint
 - Run in the terminal `npm i` to download the required script packages
 - To perform a swap run in the terminal `node swap.js <AMOUNT_PERCENTAGE> <RECEIVER> <SLIPPAGE_PERCENTAGE>`. Parameters details:
     - `<AMOUNT_PERCENTAGE>` is required, this is the percentage of the total address balance that will be used as the swap input value. For example if you set value of 100 then 100% of the address's NEON balance will be used for the swap logic.

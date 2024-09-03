@@ -6,7 +6,7 @@ const { BigNumber } = require("bignumber.js");
 const { amount2Decimal, fetchToken, getErc20TokenContract } = require("iziswap-sdk/lib/base/token/token");
 const { getQuoterContract, quoterSwapChainWithExactInput } = require("iziswap-sdk/lib/quoter/funcs");
 
-const web3 = new Web3(config.RPC);
+const web3 = new Web3(process.env.RPC);
 const SIGNER = web3.eth.accounts.wallet.add(process.env.PRIVATE_KEY_OWNER);
 
 // script args
